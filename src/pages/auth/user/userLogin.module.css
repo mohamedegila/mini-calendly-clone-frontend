@@ -1,0 +1,36 @@
+.box {
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    position: relative;
+    color: #373737;
+    padding: 35px;
+    text-align: start;
+    font-size: 16px;
+    line-height: 22px;
+    width: 50%;
+    font-weight: 700;
+    font-style: normal;
+  }
+  .box input{
+    height: 48px;
+    padding-left: 8px;
+    font-size: 16px;
+    line-height: 18px;
+    border: 1px solid #CCC;
+    font-weight: 700;
+    border-radius: 8px;
+}
+
+.box input[type=submit]{
+    background-color: #486bff;
+    color: #FFF;
+    cursor: pointer;
+}
+
+.box form{
+   
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+  
+  

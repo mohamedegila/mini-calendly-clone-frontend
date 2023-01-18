@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Logo } from "./logo";
 export const Navbar = (props) => {
   //    const currentUser = useSelector((store)=>store.authReducer.currentUser)
 
@@ -12,11 +13,7 @@ export const Navbar = (props) => {
             aria-label="Global"
           >
             <div class="flex lg:min-w-0 md:flex-1" aria-label="Global">
-              <Link to="/">
-                <span class="text-xl font-bold text-blue-600/100">
-                  Mini Calendly Clone
-                </span>
-              </Link>
+            <Logo/>
             </div>
 
             {props.isNavLink && (

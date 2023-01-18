@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import styles from "../login.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Actions = (props) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const clickHandler = () => {
     const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     if (email.match(emailRegex)) {
       setError("");
+      let queryString = "email=" + email;
+    
+      navigate(`${props.data.actions.url}?${queryString}`);
     } else {
       setError("Please enter a valid email address.");
     }

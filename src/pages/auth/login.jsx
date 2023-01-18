@@ -12,7 +12,7 @@ export const Login = () => {
     second_message: "to Calendly",
     info_message: "Log in to your account to get back to your hub for scheduling meetings.",
     actions:{
-      url: '/login',
+      url: '/auth/login',
       btnName: 'login'
     }
   }); 

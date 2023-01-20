@@ -54,12 +54,11 @@ export const Actions = (props) => {
           {props.data.type === "login" ? (
             <p className={styles.signup_lable}>
               Don’t have an account?{" "}
-              <p to="/signup">
-                <span style={{ color: "#486bff", lineHeight: "25px" }}>
-                  {" "}
-                  Sign Up
-                </span>
-              </p>
+              <Link to="/signup" style={{ color: "#486bff", lineHeight: "25px" }}>
+                
+                  SignUp
+                
+              </Link>
             </p>
           ) : (
             props.data.actions.message

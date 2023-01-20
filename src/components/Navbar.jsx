@@ -1,9 +1,18 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { auth } from "../redux/auth/authSlice";
 import { Logo } from "./logo";
 export const Navbar = (props) => {
   //    const currentUser = useSelector((store)=>store.authReducer.currentUser)
 
+  const {isAuth} = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const logoutHandler = () => {
+    dispatch(auth(false))
+    //TODO: Clear session
+  }
+  
   return (
     <>
       <div class="px-6 pt-6 lg:px-8">
@@ -72,12 +81,25 @@ export const Navbar = (props) => {
                   </Link>
                 </div>
                 <div class="hidden lg:flex lg:min-w-0 lg:flex-1 lg:justify-end">
-                  <Link
-                    to="/login"
-                    class="inline-block rounded-lg px-3 py-1.5 text-sm font-semibold leading-6 text-gray-900 shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20"
-                  >
-                    Log in
-                  </Link>
+                  {
+                    isAuth ? (
+                      <Link
+                      to="#"
+                      onClick={logoutHandler}
+                      class="inline-block rounded-lg px-3 py-1.5 text-sm font-semibold leading-6 text-gray-900 shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20"
+                    >
+                      Logout
+                    </Link>
+                    ) : (
+                      <Link
+                      to="/login"
+                      class="inline-block rounded-lg px-3 py-1.5 text-sm font-semibold leading-6 text-gray-900 shadow-sm ring-1 ring-gray-900/10 hover:ring-gray-900/20"
+                    >
+                      Login
+                    </Link>
+                    )
+                  }
+                 
                 </div>
               </>
             )}

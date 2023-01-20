@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Navbar } from "../../components/Navbar";
 import { Actions } from "../auth/components/actions";
-
 import styles from "./home.module.css";
 import img from "../../assets/Homepage-Hero-new.webp";
 
@@ -19,11 +18,13 @@ export const Home = () => {
     },
   });
 
-  
+
+
   return (
     <>
       <div class="isolate bg-white">
         <Navbar isNavLink={true}/>
+      
         <main>
           <div>
             <div className="flex text-start">

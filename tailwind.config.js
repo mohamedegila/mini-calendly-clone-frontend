@@ -10,7 +10,8 @@ module.exports = {
     extend: {
       colors: {
         'info-color': '#0b3558',
-        'danger' : '#f87171'
+        'danger' : '#f87171',
+        'success': '#84cc16'
       },
     },
   },

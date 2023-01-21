@@ -4,13 +4,15 @@ import {  useSelector } from "react-redux";
 
 const UserRoute = ({ children }) => {
   // const location = useLocation();
-  const {isAuth} = useSelector((state) => state.auth);
+  const {user} = useSelector((state) => state.auth);
+
+  console.log({user});
   const navigate = useNavigate()
   useEffect(() => {
-    if(!isAuth){
-      navigate("/calendly")
+    if(user === null){
+      navigate("/login")
     }
-  }, [navigate,isAuth])
+  }, [navigate,user])
   
 
   

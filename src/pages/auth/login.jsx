@@ -1,11 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./login.module.css";
 // import { Link } from "react-router-dom";
 import { Actions } from "./components/actions";
 import { Navbar } from "../../components/Navbar";
+import {  useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
 
+  const { user } = useSelector((state) => state.auth);
+
+  const navigate = useNavigate();
+ 
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
   const [data] = useState({
     type: 'login',
     first_message: "Welcome back",

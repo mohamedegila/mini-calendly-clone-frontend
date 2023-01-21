@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import repository from "../../../../api/repository";
 import { Logo } from "../../../../components/logo";
-import { refresh } from "../../../../redux/common/commonSlice";
+import { setAuth, setUser } from "../../../../redux/auth/authSlice";
+import store from "../../../../redux/store";
 
 import commonAuthStyle from "../commonAuth.module.css";
 
 export const Login = () => {
+  const [error, setError] = useState([]);
   const [state, setState] = useState({
     email: "",
     password: "",
@@ -18,16 +19,16 @@ export const Login = () => {
 
   const [searchParams] = useSearchParams();
 
+  const { user } = useSelector((state) => state.auth);
 
-  const {isAuth} = useSelector((state) => state.auth);
-  
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isAuth) {
+    if (user) {
       navigate("/");
     }
-  }, [isAuth, navigate]);
+  }, [user, navigate]);
 
   useEffect(() => {
     setState({ ...state, ["email"]: searchParams.get("email") });
@@ -36,6 +37,7 @@ export const Login = () => {
   const handleChange = (e) => {
     let { name, value } = e.target;
     setState({ ...state, [name]: value });
+    setError([])
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,10 +45,20 @@ export const Login = () => {
       return;
     }
 
-    await repository.createSession();
-    setState({ email: "", password: "" });
-  };
+    try {
+      await repository.createSession();
+      const res = await repository.login(state);
+      await dispatch(setUser(res.data.data.info));
+      // await dispatch(auth(true));
+      // store.dispatch(setAuth(false));
 
+      navigate('/calendly')
+      setState({ email: "", password: "" });
+    } catch (error) {
+      console.log({ error });
+      setError([error?.response?.data?.message])
+    }
+  };
 
   return (
     <>
@@ -81,6 +93,16 @@ export const Login = () => {
                 required
               />
 
+              <ul className="pl-2">
+                {(() => {
+                  const arr = [];
+                  error.forEach((mgs) => {
+                    arr.push(<li className="text-sm text-danger">{mgs}</li>);
+                  });
+                  return arr;
+                })()}
+              </ul>
+
               <input
                 type="submit"
                 value="Log In"
@@ -90,8 +112,11 @@ export const Login = () => {
               <div>
                 <div className={commonAuthStyle.signup_lable}>
                   Don’t have an account?{" "}
-                  <Link to="/signup" style={{ color: "#486bff", lineHeight: "25px" }}>
-                      SignUp
+                  <Link
+                    to="/signup"
+                    style={{ color: "#486bff", lineHeight: "25px" }}
+                  >
+                    SignUp
                   </Link>
                 </div>
               </div>

@@ -10,9 +10,9 @@ const EventTypes = () => {
 
       <div className="flex justify-between">
         <div className="flex gap-10">
-          <h3>{isAuth  ? `${user.username}` : "Username"}</h3>
+          <h3>{user  ? `${user?.user?.username}` : "Username"}</h3>
           
-          <h3>{isAuth ? `${user.email}` : "email"}</h3>
+          <h3>{user ? `${user?.user?.email}` : "email"}</h3>
           
         </div>
         <div>

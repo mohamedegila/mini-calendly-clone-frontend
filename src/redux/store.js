@@ -7,9 +7,11 @@ import { commonReducer } from "./common/commonSlice";
 
 let store = configureStore({
     reducer:{
-        app: appReducer,
         common: commonReducer,
-        auth: authReducer
+
+        auth: authReducer,
+
+        app: appReducer,
     }
 })
 

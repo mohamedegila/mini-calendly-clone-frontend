@@ -1,15 +1,17 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { auth } from "../redux/auth/authSlice";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../redux/auth/authSlice";
 import { Logo } from "./logo";
 export const Navbar = (props) => {
   //    const currentUser = useSelector((store)=>store.authReducer.currentUser)
 
   const {isAuth} = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const logoutHandler = () => {
-    dispatch(auth(false))
+    dispatch(logout())
+    navigate('/')
     //TODO: Clear session
   }
   

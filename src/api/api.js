@@ -1,6 +1,6 @@
 import axios from "axios";
 import { refresh } from "../redux/common/commonSlice";
-import { useDispatch } from "react-redux";
+// import { toast } from 'react-toastify';
 
 import store from "../redux/store";
 
@@ -31,17 +31,19 @@ async response => {
     console.log('loadding end');
     store.dispatch(refresh(false));
     
-
+    // toast.success(response.data.message)
+    // <ToastContainer />
     return response; 
 
 },
 error => {
     // store.dispatch("setIsLoading", false);
-    console.log('Error');
+    console.log('Error', error);
 
     store.dispatch(refresh(false));
 
-        if (error?.response?.status === 401) {
+    // toast.error(error?.response?.message)
+        if (error?.response?.status === 401 && error?.response?.data?.errors?.target !== 'login') {
             sessionStorage.removeItem('user');
             window.location.reload();
         }

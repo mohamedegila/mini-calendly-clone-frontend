@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import repository from "../../../../api/repository";
 import { Logo } from "../../../../components/logo";
+import { setUser } from "../../../../redux/auth/authSlice";
 import commonAuthStyle from "../commonAuth.module.css";
 
 export const Signup = () => {
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     email: "",
     username: "",
@@ -29,21 +31,18 @@ export const Signup = () => {
 
   const { email, username, password } = state;
 
-  const {isUppercase,
-    isNumber,
-    isSpcial,
-    isLowercase} = passwordVlidation
+  const { isUppercase, isNumber, isSpcial, isLowercase } = passwordVlidation;
   const [searchParams] = useSearchParams();
 
-  const {isAuth} = useSelector((state) => state.auth);
-  
+  const { user } = useSelector((state) => state.auth);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuth) {
+    if (user) {
       navigate("/");
     }
-  }, [isAuth, navigate]);
+  }, [user, navigate]);
 
   useEffect(() => {
     setState({ ...state, ["email"]: searchParams.get("email") });
@@ -60,8 +59,8 @@ export const Signup = () => {
     setState({ ...state, [name]: value });
     setErrors((prev) => ({
       ...prev,
-      [name]: value.length > 0 ?  [] :  ["*required"]
-    }))
+      [name]: value.length > 0 ? [] : ["*required"],
+    }));
 
     if (name === "password") {
       setIsPassword(true);
@@ -79,15 +78,24 @@ export const Signup = () => {
     let isErrors = false;
 
     for (const [key, value] of Object.entries(errors)) {
-      console.log(`${key}: ${value}`);
       isErrors = isErrors || value.length > 0;
     }
 
-    if ((!isErrors && isUppercase && isNumber && isSpcial && isLowercase)){
-      await repository.createSession();
-      setState({ email: "", usernam: "", password: "" });
-    }
+    if (!isErrors && isUppercase && isNumber && isSpcial && isLowercase) {
+      try {
+        let res = await repository.signin(state);
+        console.log({ res });
 
+        let queryString = "email=" + res?.data?.data?.info?.email;
+
+        navigate(`/auth/login?${queryString}`);
+
+        setState({ email: "", usernam: "", password: "" });
+        setIsPassword(false);
+      } catch (error) {
+        setErrors({ ...error.response.data.errors });
+      }
+    }
   };
 
   return (
@@ -113,18 +121,13 @@ export const Signup = () => {
                 required
               />
               <ul className="pl-2">
-                {
-                  (() => {
-                    const arr = [];
-                    errors.email.forEach(mgs => {
-                      arr.push(
-                      <li className="text-sm text-danger">{mgs}</li>
-                      )
-                    })
-                    return arr;
-                  })()
-                
-                }
+                {(() => {
+                  const arr = [];
+                  errors.email.forEach((mgs) => {
+                    arr.push(<li className="text-sm text-danger">{mgs}</li>);
+                  });
+                  return arr;
+                })()}
               </ul>
               <label>User Name</label>
               <input
@@ -136,18 +139,13 @@ export const Signup = () => {
                 required
               />
               <ul className="pl-2">
-                {
-                  (() => {
-                    const arr = [];
-                    errors.username.forEach(mgs => {
-                      arr.push(
-                      <li className="text-sm text-danger">{mgs}</li>
-                      )
-                    })
-                    return arr;
-                  })()
-                
-                }
+                {(() => {
+                  const arr = [];
+                  errors.username.forEach((mgs) => {
+                    arr.push(<li className="text-sm text-danger">{mgs}</li>);
+                  });
+                  return arr;
+                })()}
               </ul>
 
               <label>Password</label>

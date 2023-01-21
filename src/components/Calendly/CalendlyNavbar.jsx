@@ -1,9 +1,26 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import repository from "../../api/repository";
+import { logout } from "../../redux/auth/authSlice";
 import { Logo } from "../logo";
 
 
 const CalendlyNavbar = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const logoutHandler = async () => {
+    try{
+      await repository.logout();
+      await dispatch(logout());
+      navigate('/')
+    }catch(error){
+      console.log(error);
+    }
+
+  }
   
   return (
     <>
@@ -39,7 +56,9 @@ const CalendlyNavbar = () => {
                 </button>
               </Link>
 
-             <Link to="/logout">
+             <Link to="#"
+             onClick={logoutHandler}
+             >
                 logout
              </Link>
             </div>

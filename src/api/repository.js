@@ -25,4 +25,8 @@ export default {
   logout() {
     return api.get(`${process.env.REACT_APP_BACKEND_URL}/logout`);
   },
+
+  get(module) {
+    return api.get(`${process.env.REACT_APP_BACKEND_URL}/${module}`);
+  },
 };

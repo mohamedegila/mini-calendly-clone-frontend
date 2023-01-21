@@ -1,10 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import EventCard from "./EventCard";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import repository from "../../api/repository";
+import {events} from '../../redux/app/appSlice'
 
 const EventTypes = () => {
-  const {isAuth, user} =  useSelector((state)=>state.auth)
+  const {user} =  useSelector((state)=>state.auth)
+  // const [events, setEvents]= useState([]);
+
+  const dispatch = useDispatch();
+  useEffect( () => {
+    
+
+    async function fetchEventsApi() {
+      let res = await repository.get('event');
+      console.log({res});
+      dispatch(events(res.data.data))
+      
+    }
+
+    fetchEventsApi()
+
+  }, [events]);
   return (
     <div className="mx-3">
 

@@ -3,14 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 let initialState = {
     
-    events:[{
-        id: 1,
-        duration: 10
-    },
-    {
-        id: 2,
-        duration: 60
-    }]
+    events:[]
 }
 let appSlice = createSlice({
     name:"app",

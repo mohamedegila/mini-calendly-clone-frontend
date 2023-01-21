@@ -4,6 +4,7 @@ import { Login } from "../pages/auth/login";
 import { Login as AuthLogin } from "../pages/auth/user/login/login";
 import { Signup } from "../pages/auth/user/signup/signup";
 import { AddEvent } from "../pages/calendly/addEvent/addEvent";
+import { ShowCalendar } from "../pages/calendly/eventBooking/ShowCalendar";
 import CalendlyHome from "../pages/calendly/home";
 
 import { Home } from "../pages/home/home";
@@ -33,6 +34,14 @@ export const MainRoutes = () => {
           </UserRoute>
         }
       />
+      <Route
+          path="/events/:user_slug/:event_slug"
+          element={
+            <UserRoute>
+              <ShowCalendar/>
+            </UserRoute>
+          }
+        />
     </Routes>
   );
 };

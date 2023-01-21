@@ -29,8 +29,7 @@ export const AddEvent = () => {
     duration: "",
     id: Date.now(),
   });
-  const { name, location, start_date, start_time,  end_date,end_time,
-  link, description, duration } = postData;
+  const { name, location, start_date, start_time, end_date, end_time, link, description, duration } = postData;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -76,10 +75,10 @@ export const AddEvent = () => {
 
   return (
     <div className="m-auto mt-2">
-      <div className="m-auto mb-2 p-4 w-60">
+      <div className="m-auto mb-2 p-4 ">
         <div className="flex justify-between">
           <Link
-            to="/create_event"
+            to="/calendly"
             style={{
               border: "1px solid #006bff",
               color: "#006bff",
@@ -338,7 +337,7 @@ export const AddEvent = () => {
                   backgroundColor: "#006bff",
                 }}
               >
-                Next
+                Create
               </button>
             </div>
           </div>

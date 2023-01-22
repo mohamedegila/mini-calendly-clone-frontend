@@ -5,8 +5,9 @@ import "./ReactCalendar.css";
 import { UserDetails } from "./UserDetails";
 
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import repository from "../../../api/repository";
+import { setRegisterInfo } from "../../../redux/app/appSlice";
 
 export const ShowCalendar = () => {
   const [showTime, setShowTime] = useState(false);
@@ -17,14 +18,18 @@ export const ShowCalendar = () => {
 
   const [selectdData, setSelectdData] = useState({
     date: '',
+    duration: 0,
     start_time: "",
     end_time:"",
     event_slug: "",
-    user_slug: ""
+    user_slug: "",
+    name:"",
+    email:"",
   });
  
 
   const navigate = useNavigate();
+  const dispatch = useDispatch(); 
 
   const date = new Date();
 
@@ -49,15 +54,21 @@ export const ShowCalendar = () => {
 
 
   useEffect(() => {
+    
+
     async function getEvent() {
+      let eventData = null;
       if (events.length > 0) {
-        var data = events.find((ele) => ele.slug === event_slug);
-        setEvent(data);
+        eventData = events.find((ele) => ele.slug === event_slug);
       } else {
         const res = await repository.get(`events/${user_slug}/${event_slug}`);
-        setEvent(res.data.data);
+        eventData = res.data.data;
+       
         console.log({ e: res.data.data });
       }
+
+      setEvent(eventData);
+      
 
     }
 
@@ -79,14 +90,24 @@ export const ShowCalendar = () => {
     setSelectdData(prev => ({
       ...prev,
       start_time: times[idx][0],
-      end_time: times[idx][1], 
-
+      end_time: times[idx][1]
     }))
     // setSelectTime(times[idx]);
   };
 
-  const nextHandler = () => {
-    console.log({selectdData});
+  const nextHandler = (e) => {
+    e.preventDefault();
+    console.log({S:selectdData, event});
+    setSelectdData(prev => ({
+      ...prev,
+      duration: event?.duration
+    }))
+
+    let data = {...selectdData};
+    data['duration'] = event?.duration
+    dispatch(setRegisterInfo(data));
+
+    navigate("/events/schedule");
   }
 
   return (
@@ -149,110 +170,9 @@ export const ShowCalendar = () => {
                     });
                     return arr;
                   })()}
-                
-               
-                {/* <button
-                  style={{
-                    background: "blue",
-                    width: "100px",
-                    borderRadius: "10px",
-                    color: "white",
-                    padding: "5px",
-                  }}
-                >
-                  11:00 am
-                </button>
-                <button
-                  style={{
-                    background: "blue",
-                    width: "100px",
-                    borderRadius: "10px",
-                    color: "white",
-                    padding: "5px",
-                  }}
-                >
-                  2:30 pm
-                </button>
-                <button
-                  style={{
-                    background: "blue",
-                    width: "100px",
-                    borderRadius: "10px",
-                    color: "white",
-                    padding: "5px",
-                  }}
-                >
-                  3:00 pm
-                </button>
-                <button
-                  style={{
-                    background: "blue",
-                    width: "100px",
-                    borderRadius: "10px",
-                    color: "white",
-                    padding: "5px",
-                  }}
-                >
-                  3:30 pm
-                </button> */}
+              
               </div>
-              {/* <div> */}
-                {/* <button
-                  style={{
-                    background: "green",
-                    width: "100px",
-                    borderRadius: "10px",
-                    color: "white",
-                    padding: "5px",
-                  }}
-                >
-                  Confirm
-                </button> */}
-                {/* <button
-                  style={{
-                    background: "blue",
-                    width: "100px",
-                    borderRadius: "10px",
-                    color: "white",
-                    padding: "5px",
-                  }}
-                >
-                  Confirm
-                </button>
-                <button
-                  style={{
-                    background: "blue",
-                    width: "100px",
-                    borderRadius: "10px",
-                    color: "white",
-                    padding: "5px",
-                  }}
-                >
-                  Confirm
-                </button>
-                <button
-                  style={{
-                    background: "blue",
-                    width: "100px",
-                    borderRadius: "10px",
-                    color: "white",
-                    padding: "5px",
-                  }}
-                >
-                  Confirm
-                </button>
-                <button
-                  style={{
-                    background: "blue",
-                    width: "100px",
-                    borderRadius: "10px",
-                    color: "white",
-                    padding: "5px",
-                  }}
-                >
-                  Confirm
-                </button> */}
-              {/* </div> */}
+
             </div>
             <Link 
             onClick={nextHandler}

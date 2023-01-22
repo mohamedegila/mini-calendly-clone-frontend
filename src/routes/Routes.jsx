@@ -6,6 +6,9 @@ import { Signup } from "../pages/auth/user/signup/signup";
 import { AddEvent } from "../pages/calendly/addEvent/addEvent";
 import { ShowCalendar } from "../pages/calendly/eventBooking/ShowCalendar";
 import CalendlyHome from "../pages/calendly/home";
+import MeetingShedule from "../pages/calendly/MeetingShedule/MeetingShedule";
+import { ThankYou } from "../pages/calendly/thankYou";
+
 
 import { Home } from "../pages/home/home";
 import UserRoute from "./UserRoute";
@@ -37,9 +40,25 @@ export const MainRoutes = () => {
       <Route
           path="/events/:user_slug/:event_slug"
           element={
-            <UserRoute>
+            // <UserRoute>
               <ShowCalendar/>
-            </UserRoute>
+            // </UserRoute>
+          }
+        />
+        <Route
+          path="/events/schedule"
+          element={
+            // <UserRoute>
+              <MeetingShedule/>
+            // </UserRoute>
+          }
+        />
+        <Route
+          path="/thanks"
+          element={
+            // <UserRoute>
+              <ThankYou/>
+            // </UserRoute>
           }
         />
     </Routes>

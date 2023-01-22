@@ -14,7 +14,7 @@ const EventCard = () => {
 
   const copyHandler = (url) =>{
     console.log({url});
-    navigator.clipboard.writeText(`${process.env.REACT_APP_FRONTEND_URL}/${url}`);
+    navigator.clipboard.writeText(`${process.env.REACT_APP_FRONTEND_URL}${url}`);
     toast.success("copied successfully", {
       autoClose: 1000,
     })
@@ -48,7 +48,7 @@ const EventCard = () => {
           </button>
           </div>
         </div>
-        <ToastContainer />
+        
       </div>
       ))
      } 

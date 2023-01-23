@@ -4,7 +4,8 @@
  **Run the following commands**
 - npm install
 - copy .env.example as .env file set back-end url
-### `npm run start`
+- npm run start
+
 
 
 

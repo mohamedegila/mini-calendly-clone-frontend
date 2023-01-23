@@ -3,6 +3,7 @@ import "./MeetingShedule.css";
 // import Moment from "react-moment";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 import repository from "../../../api/repository";
 import { toast } from "react-toastify";
 const MeetingShedule = () => {
@@ -10,6 +11,13 @@ const MeetingShedule = () => {
   const navigate = useNavigate();
   
   const [addGuests] = useState(false);
+  const [errors, setErrors] = useState([]);
+  const [isEmpty, setIsEmpty] = useState({
+    name: false,
+    email: false,
+  });
+
+
   
   const {registerInfo} = useSelector((state)=> state.app);
 
@@ -19,10 +27,18 @@ const MeetingShedule = () => {
     let { name, value } = e.target;
     console.log( name, value);
     setData({ ...data, [name]: value });
+    // setIsEmpty({ ...data, [name]: value === '' })
+    setIsEmpty(prev => ({
+      ...prev,
+      [name]: value === ''
+    }))
   }
 
   const scheduleEventHandler = async () => {
     console.log({scheduleEventHandler: data});
+
+    if(data['name'] === '' || data['email'])
+    return;
 
     try{
       let res = await repository.eventRegister(data);
@@ -34,8 +50,10 @@ const MeetingShedule = () => {
 
       navigate('/thanks');
     }catch(error){
-      toast.error(error.message, {
-        autoClose: 2000,
+      console.log({error});
+      setErrors(error?.response?.data?.errors?.email);
+      toast.error(error?.response?.data?.message, {
+        autoClose: 5000,
       })
     }
    
@@ -69,12 +87,14 @@ const MeetingShedule = () => {
           <div className="input-container-meeting">
             <label className="meeting-label">Name *</label>
             <input name="name" onInput={onInputHandler} className="input-meeting" />
+            {isEmpty['name'] && (<p className="text-danger text-sm">*required</p>)}
           </div>
 
           {/* Email  */}
           <div className="input-container-meeting">
             <label>Email *</label>
             <input type="email" onInput={onInputHandler} name="email" className="input-meeting" />
+            {isEmpty['email'] && (<p className="text-danger text-sm">*required</p>)}
           </div>
           <button
             className={addGuests ? "display-none" : "add-guest-meeting"}

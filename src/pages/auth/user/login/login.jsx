@@ -19,7 +19,11 @@ export const Login = () => {
 
   const [searchParams] = useSearchParams();
 
-  const { user } = useSelector((state) => state.auth);
+  // const { user } = useSelector((state) => state.auth);
+
+  const user = sessionStorage.user
+          ? JSON.parse(sessionStorage.getItem("user"))
+          : null;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -48,9 +52,10 @@ export const Login = () => {
     try {
       await repository.createSession();
       const res = await repository.login(state);
-      await dispatch(setUser(res.data.data.info));
-      // await dispatch(auth(true));
-      // store.dispatch(setAuth(false));
+
+      // await dispatch(setUser(res.data.data.info));
+      sessionStorage.setItem("user", JSON.stringify(res.data.data.info));
+    
 
       navigate('/calendly')
       setState({ email: "", password: "" });
@@ -96,7 +101,7 @@ export const Login = () => {
               <ul className="pl-2">
                 {(() => {
                   const arr = [];
-                  error.forEach((mgs) => {
+                  error?.forEach((mgs) => {
                     arr.push(<li className="text-sm text-danger">{mgs}</li>);
                   });
                   return arr;

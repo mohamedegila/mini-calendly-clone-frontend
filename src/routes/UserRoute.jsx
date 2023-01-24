@@ -1,23 +1,21 @@
-import React, { useEffect } from "react";
-import {  useNavigate } from "react-router-dom";
-import {  useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const UserRoute = ({ children }) => {
   // const location = useLocation();
-  const {user} = useSelector((state) => state.auth);
+  // const {user} = useSelector((state) => state.auth);
+  const user = sessionStorage.user
+    ? JSON.parse(sessionStorage.getItem("user"))
+    : null;
 
-  console.log({user});
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
-    if(user === null){
-      navigate("/login")
+    if (user === null) {
+      navigate("/login");
     }
-  }, [navigate,user])
-  
+  }, [navigate, user]);
 
-  
-  return children
+  return children;
 };
 
 export default UserRoute;
-

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import style from "./addEvent.module.css";
+import { toast } from "react-toastify";
 
 import { useSelector, useDispatch } from "react-redux";
+import repository from "../../../api/repository";
 
 export const AddEvent = () => {
   const { events } = useSelector((state) => state.app);
@@ -14,6 +16,20 @@ export const AddEvent = () => {
   const [endOfyear] = useState("2023-12-31");
   const [isCustom, setIscustom] = useState(false);
 
+  const [errors, setErrors] = useState({
+    name: [],
+    start_date: [],
+    start_time: [],
+
+    end_date: [],
+    end_time: [],
+
+    location: [],
+    description: [],
+    
+    duration: [],
+    
+  });
 
   const [postData, setPostData] = useState({
     name: "",
@@ -29,48 +45,88 @@ export const AddEvent = () => {
     duration: "",
     id: Date.now(),
   });
-  const { name, location, start_date, start_time, end_date, end_time, link, description, duration } = postData;
+  const {
+    name,
+    location,
+    start_date,
+    start_time,
+    end_date,
+    end_time,
+    link,
+    description,
+    duration,
+  } = postData;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    if(name === 'durationType'){
-  
-      if(value === 'custom')
-        setIscustom(true)
-      else
-        setIscustom(false)
+    setErrors((prev) => ({
+      ...prev,
+      [name]: value.length > 0 ? [] : ["*required"],
+    }));
 
-        setPostData(prev =>({
-          ...prev,
-          duration: value,
-        }))
-    }else{
-    setPostData({ ...postData, [name]: value });
+    if (name === "durationType") {
+      if (value === "custom") setIscustom(true);
+      else setIscustom(false);
 
+      setPostData((prev) => ({
+        ...prev,
+        duration: value,
+      }));
+    } else {
+      setPostData({ ...postData, [name]: value });
     }
 
-    console.log(today,name, value);
+    console.log(today, name, value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // dispatch(addEventData(postData)).then(dispatch(getEventData()));
-    console.log({postData});
-    setPostData({
-      name: "",
-      location: "",
-      start_date: "",
-      start_time: "",
-      end_date: "",
-      end_time: "",
-      link: "",
-      description: "",
-      duration: "",
-    });
+    
+    console.log({ postData });
+    
+    let isErrors = false;
 
-    setIscustom(false)
-    // navigate("/calendly", { replace: true });
+    // for (const [key, value] of Object.entries(errors)) {
+    //   isErrors = isErrors || value.length > 0;
+    // }
+
+    console.log({isErrors, errors});
+    if(!isErrors){
+     try{
+      let res = await repository.post('event', postData);
+      setPostData({
+        name: "",
+        location: "",
+        start_date: "",
+        start_time: "",
+        end_date: "",
+        end_time: "",
+        link: "",
+        description: "",
+        duration: "",
+      });
+  
+      setIscustom(false);
+      toast.success(res?.data?.message, {
+        autoClose: 5000,
+      })
+
+      navigate("/calendly", { replace: true });
+
+     }catch(error){
+      toast.error(error?.response?.data?.message, {
+        autoClose: 5000,
+      })
+      setErrors(prev => ({
+        ...prev,
+        ...error?.response?.data?.errors
+      }));
+     }
+      
+    }
+
+  
   };
 
   return (
@@ -128,6 +184,16 @@ export const AddEvent = () => {
                 onChange={handleChange}
                 required
               />
+
+              <ul className="pl-2">
+                {(() => {
+                  const arr = [];
+                  errors?.name?.forEach((mgs) => {
+                    arr.push(<li className="text-sm text-danger">{mgs}</li>);
+                  });
+                  return arr;
+                })()}
+              </ul>
             </div>
 
             <div>
@@ -144,6 +210,15 @@ export const AddEvent = () => {
                 <option value="">Select location</option>
                 <option value="Zoom">Zoom</option>
               </select>
+              <ul className="pl-2">
+                {(() => {
+                  const arr = [];
+                  errors?.location?.forEach((mgs) => {
+                    arr.push(<li className="text-sm text-danger">{mgs}</li>);
+                  });
+                  return arr;
+                })()}
+              </ul>
             </div>
             <div>
               <div className="mb-2">
@@ -160,6 +235,15 @@ export const AddEvent = () => {
                 placeholder="Write a summary and any details your invitee should know about the event"
                 required
               />
+              <ul className="pl-2">
+                {(() => {
+                  const arr = [];
+                  errors?.description?.forEach((mgs) => {
+                    arr.push(<li className="text-sm text-danger">{mgs}</li>);
+                  });
+                  return arr;
+                })()}
+              </ul>
             </div>
           </div>
 
@@ -206,6 +290,17 @@ export const AddEvent = () => {
                     onChange={handleChange}
                     required
                   />
+                  <ul className="pl-2">
+                    {(() => {
+                      const arr = [];
+                      errors?.start_date?.forEach((mgs) => {
+                        arr.push(
+                          <li className="text-sm text-danger">{mgs}</li>
+                        );
+                      });
+                      return arr;
+                    })()}
+                  </ul>
                 </div>
 
                 <div style={{ display: "flex", gap: "10px" }}>
@@ -223,6 +318,13 @@ export const AddEvent = () => {
                     onChange={handleChange}
                     required
                   />
+                  {(() => {
+                    const arr = [];
+                    errors?.end_date?.forEach((mgs) => {
+                      arr.push(<li className="text-sm text-danger">{mgs}</li>);
+                    });
+                    return arr;
+                  })()}
                 </div>
               </div>
               <div className={style.time_main_box2_b}>
@@ -267,41 +369,65 @@ export const AddEvent = () => {
                       <option value="60">60min</option>
                       <option value="custom">Custom</option>
                     </select>
+
+                    {(() => {
+                      const arr = [];
+                      errors?.durationType?.forEach((mgs) => {
+                        arr.push(
+                          <li className="text-sm text-danger">{mgs}</li>
+                        );
+                      });
+                      return arr;
+                    })()}
                   </div>
                 </div>
               </div>
               <div className={style.time_main_box3_b}>
-                
+                <div style={{ display: "flex", gap: "10px" }}>
+                  {/* <div style={{padding:"5px 0px"}}><input type="radio" style={{width:"50px", height:"50%" }}/></div> */}
+                  <p className="mt-2">Start_time</p>
+
+                  <input
+                    className="border-2 rounded p-2 w-full"
+                    type="time"
+                    name="start_time"
+                    onChange={handleChange}
+                    required
+                  />
+
+                  {(() => {
+                    const arr = [];
+                    errors?.start_time?.forEach((mgs) => {
+                      arr.push(<li className="text-sm text-danger">{mgs}</li>);
+                    });
+                    return arr;
+                  })()}
+                </div>
+
+                <div style={{ display: "flex", gap: "10px" }}>
+                  {/* <div style={{padding:"5px 0px"}}><input type="radio" style={{width:"50px", height:"50%" }}/></div> */}
+                  <p className="mt-2">End_time</p>
+
+                  <input
+                    className="border-2 rounded p-2 w-full"
+                    type="time"
+                    name="end_time"
+                    onChange={handleChange}
+                    required
+                  />
+
+                  {(() => {
+                    const arr = [];
+                    errors?.end_time?.forEach((mgs) => {
+                      arr.push(<li className="text-sm text-danger">{mgs}</li>);
+                    });
+                    return arr;
+                  })()}
+                </div>
+
+                {isCustom && (
+                  <>
                     <div style={{ display: "flex", gap: "10px" }}>
-                      {/* <div style={{padding:"5px 0px"}}><input type="radio" style={{width:"50px", height:"50%" }}/></div> */}
-                      <p className="mt-2">Start_time</p>
-
-                      <input
-                        className="border-2 rounded p-2 w-full"
-                        type="time"
-                        name="start_time"
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-
-                    <div style={{ display: "flex", gap: "10px" }}>
-                      {/* <div style={{padding:"5px 0px"}}><input type="radio" style={{width:"50px", height:"50%" }}/></div> */}
-                      <p className="mt-2">End_time</p>
-
-                      <input
-                        className="border-2 rounded p-2 w-full"
-                        type="time"
-                        name="end_time"
-                        onChange={handleChange}
-                        required
-                      />
-                    </div>
-
-                    {
-                      isCustom && (
-                        <>
-                         <div style={{ display: "flex", gap: "10px" }}>
                       {/* <div style={{padding:"5px 0px"}}><input type="radio" style={{width:"50px", height:"50%" }}/></div> */}
                       <p className="mt-2">duration [in min]</p>
 
@@ -312,13 +438,18 @@ export const AddEvent = () => {
                         onChange={handleChange}
                         required
                       />
+                      {(() => {
+                        const arr = [];
+                        errors?.duration?.forEach((mgs) => {
+                          arr.push(
+                            <li className="text-sm text-danger">{mgs}</li>
+                          );
+                        });
+                        return arr;
+                      })()}
                     </div>
-                        </>
-                      )
-                    }
-                   
-
-                
+                  </>
+                )}
               </div>
             </div>
 

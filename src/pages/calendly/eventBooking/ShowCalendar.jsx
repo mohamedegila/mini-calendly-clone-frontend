@@ -13,36 +13,32 @@ export const ShowCalendar = () => {
   const [showTime, setShowTime] = useState(false);
   const [value, setValue] = useState(new Date());
   const [times, setTimes] = useState([]);
-  const [selectedIdx, setSelectedIdx] = useState('');
-
+  const [selectedIdx, setSelectedIdx] = useState("");
 
   const [selectdData, setSelectdData] = useState({
-    date: '',
+    date: "",
     duration: 0,
     start_time: "",
-    end_time:"",
+    end_time: "",
     event_slug: "",
     user_slug: "",
-    name:"",
-    email:"",
+    name: "",
+    email: "",
   });
- 
 
   const navigate = useNavigate();
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
-  const date = new Date();
 
   const onChange = (value) => {
-    
-    let date = new Date(value + 'UTC').toISOString().split('T')[0];
+    let date = new Date(value + "UTC").toISOString().split("T")[0];
 
-    console.log({date, t:  new Date(value).toISOString()});
+    console.log({ date, t: new Date(value).toISOString() });
     setTimes(event?.available_times[date]);
-    setSelectdData(prev => ({
+    setSelectdData((prev) => ({
       ...prev,
-      date
-    }))
+      date,
+    }));
     setSelectedIdx("");
     setValue(value);
     setShowTime(true);
@@ -52,10 +48,7 @@ export const ShowCalendar = () => {
 
   const { user_slug, event_slug } = useParams();
 
-
   useEffect(() => {
-    
-
     async function getEvent() {
       let eventData = null;
       if (events.length > 0) {
@@ -63,52 +56,49 @@ export const ShowCalendar = () => {
       } else {
         const res = await repository.get(`events/${user_slug}/${event_slug}`);
         eventData = res.data.data;
-       
+
         console.log({ e: res.data.data });
       }
 
       setEvent(eventData);
-      
-
     }
 
     getEvent();
 
-    setSelectdData(prev => ({
+    setSelectdData((prev) => ({
       ...prev,
       event_slug,
-      user_slug
-    }))
+      user_slug,
+    }));
   }, []);
 
   const handleClick = (idx) => {
-
-    setSelectedIdx(idx)
-    console.log({idx});
+    setSelectedIdx(idx);
+    console.log({ idx });
     console.log(times[idx]);
 
-    setSelectdData(prev => ({
+    setSelectdData((prev) => ({
       ...prev,
       start_time: times[idx][0],
-      end_time: times[idx][1]
-    }))
+      end_time: times[idx][1],
+    }));
     // setSelectTime(times[idx]);
   };
 
   const nextHandler = (e) => {
     e.preventDefault();
-    console.log({S:selectdData, event});
-    setSelectdData(prev => ({
+    console.log({ S: selectdData, event });
+    setSelectdData((prev) => ({
       ...prev,
-      duration: event?.duration
-    }))
+      duration: event?.duration,
+    }));
 
-    let data = {...selectdData};
-    data['duration'] = event?.duration
+    let data = { ...selectdData };
+    data["duration"] = event?.duration;
     dispatch(setRegisterInfo(data));
 
     navigate("/events/schedule");
-  }
+  };
 
   return (
     <div className="calendarContainer">
@@ -132,32 +122,33 @@ export const ShowCalendar = () => {
           />
         </div>
         {showTime && (
-          <div style={{ padding: "2%", height:"10px"}}>
+          <div style={{ padding: "2%", height: "10px" }}>
             <div style={{ marginBottom: "5%" }}>{value.toString()}</div>
             <div
               style={{
                 display: "flex",
                 width: "250px",
                 height: "350px",
-                overflow:"auto",
+                overflow: "auto",
                 flexDirection: "row",
                 justifyContent: "space-around",
               }}
             >
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "10px"
-                }}>
-                
-                   {(() => {
-                    const arr = [];
-                    times.forEach((time, idx) => {
-                      arr.push(
-                        <button
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
+              >
+                {(() => {
+                  const arr = [];
+                  times.forEach((time, idx) => {
+                    arr.push(
+                      <button
                         onClick={() => handleClick(idx)}
                         style={{
-                          background: idx === selectedIdx ? "green":"blue",
+                          background: idx === selectedIdx ? "green" : "blue",
                           width: "100px",
                           borderRadius: "10px",
                           color: "white",
@@ -166,19 +157,15 @@ export const ShowCalendar = () => {
                       >
                         {time[0]} - {time[1]}
                       </button>
-                      );
-                    });
-                    return arr;
-                  })()}
-              
+                    );
+                  });
+                  return arr;
+                })()}
               </div>
-
             </div>
-            <Link 
-            onClick={nextHandler}
-            // to={`/events/${user_slug}/${event_slug}/meetingschedule`}
-            to={`#`}
-
+            <Link
+              onClick={nextHandler}
+              to={`#`}
             >
               <button
                 style={{
@@ -202,6 +189,3 @@ export const ShowCalendar = () => {
     </div>
   );
 };
-
-// <button style={{background:"blue",width:"100px",borderRadius:"10px",color:"white"}}>Time</button>
-//             <button style={{background:"blue",width:"100px",borderRadius:"10px",color:"white"}}>Confirm</button>

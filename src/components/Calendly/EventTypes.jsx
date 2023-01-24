@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import EventCard from "./EventCard";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import repository from "../../api/repository";
 import {events} from '../../redux/app/appSlice'
 
 const EventTypes = () => {
-  const {user} =  useSelector((state)=>state.auth)
-  // const [events, setEvents]= useState([]);
+  // const {user} =  useSelector((state)=>state.auth)
+  const user = sessionStorage.user
+          ? JSON.parse(sessionStorage.getItem("user"))
+          : null;
 
   const dispatch = useDispatch();
   useEffect( () => {
@@ -16,14 +18,15 @@ const EventTypes = () => {
     async function fetchEventsApi() {
       let res = await repository.get('event');
       console.log({res});
-      dispatch(events(res.data.data))
+      dispatch(events(res?.data?.data))
       
     }
 
     fetchEventsApi()
 
-  }, [events]);
+  }, [dispatch]);
   return (
+    
     <div className="mx-3">
 
       <div className="flex justify-between">

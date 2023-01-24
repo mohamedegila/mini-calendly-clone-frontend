@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import repository from "../../../../api/repository";
 import { Logo } from "../../../../components/logo";
-import { setUser } from "../../../../redux/auth/authSlice";
 import commonAuthStyle from "../commonAuth.module.css";
 
 export const Signup = () => {
@@ -34,7 +33,10 @@ export const Signup = () => {
   const { isUppercase, isNumber, isSpcial, isLowercase } = passwordVlidation;
   const [searchParams] = useSearchParams();
 
-  const { user } = useSelector((state) => state.auth);
+  // const { user } = useSelector((state) => state.auth);
+  const user = sessionStorage.user
+          ? JSON.parse(sessionStorage.getItem("user"))
+          : null;
 
   const navigate = useNavigate();
 
@@ -93,7 +95,15 @@ export const Signup = () => {
         setState({ email: "", usernam: "", password: "" });
         setIsPassword(false);
       } catch (error) {
-        setErrors({ ...error.response.data.errors });
+        // setErrors({ ...error.response.data.errors });
+        toast.error(error?.response?.data?.message, {
+          autoClose: 5000,
+        })
+        setErrors(prev => ({
+          ...prev,
+          ...error?.response?.data?.errors
+        }));
+
       }
     }
   };
@@ -123,7 +133,7 @@ export const Signup = () => {
               <ul className="pl-2">
                 {(() => {
                   const arr = [];
-                  errors.email.forEach((mgs) => {
+                  errors?.email?.forEach((mgs) => {
                     arr.push(<li className="text-sm text-danger">{mgs}</li>);
                   });
                   return arr;
@@ -141,7 +151,7 @@ export const Signup = () => {
               <ul className="pl-2">
                 {(() => {
                   const arr = [];
-                  errors.username.forEach((mgs) => {
+                  errors?.username?.forEach((mgs) => {
                     arr.push(<li className="text-sm text-danger">{mgs}</li>);
                   });
                   return arr;
@@ -160,6 +170,13 @@ export const Signup = () => {
               {isPassword && (
                 <div>
                   <ul className="p-2">
+                  {(() => {
+                  const arr = [];
+                  errors?.password?.forEach((mgs) => {
+                    arr.push(<li className="text-sm text-danger">{mgs}</li>);
+                  });
+                  return arr;
+                })()}
                     <li
                       className={[
                         "text-sm",
@@ -207,8 +224,6 @@ export const Signup = () => {
               <input
                 type="submit"
                 value="signup"
-                bg="#486bff"
-                color={"white"}
               />
             </form>
           </div>

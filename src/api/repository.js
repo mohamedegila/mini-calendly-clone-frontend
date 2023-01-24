@@ -30,6 +30,9 @@ export default {
     return api.get(`${process.env.REACT_APP_BACKEND_URL}/${module}`);
   },
 
+  post(module,params ) {
+    return api.post(`${process.env.REACT_APP_BACKEND_URL}/${module}`, params);
+  },
   eventRegister(params){
     return api.post(`${process.env.REACT_APP_BACKEND_URL}/event/register`, params);
   }

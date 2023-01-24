@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./MeetingShedule.css";
-// import Moment from "react-moment";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import repository from "../../../api/repository";
 import { toast } from "react-toastify";
@@ -37,7 +37,7 @@ const MeetingShedule = () => {
   const scheduleEventHandler = async () => {
     console.log({scheduleEventHandler: data});
 
-    if(data['name'] === '' || data['email'])
+    if(data?.name.length === 0 ||  data?.email.length === 0)
     return;
 
     try{
@@ -66,9 +66,7 @@ const MeetingShedule = () => {
         <div className="left-container-meeting">
           <button className="back-button">⬅</button>
           <div className="main-div-timebar">
-            {/* <h4 id="h4-date" name="user">
-              {currentUser.displayName}
-            </h4> */}
+            
             <h2 id="h2-date"> {registerInfo['event_slug']} Meeting</h2>
             <h4 id="h4-date">🕒 {registerInfo['duration']} Min</h4>
           </div>

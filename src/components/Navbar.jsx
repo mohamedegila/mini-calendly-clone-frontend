@@ -6,7 +6,12 @@ import { Logo } from "./logo";
 export const Navbar = (props) => {
   //    const currentUser = useSelector((store)=>store.authReducer.currentUser)
 
-  const {isAuth} = useSelector((state) => state.auth);
+  // const {isAuth} = useSelector((state) => state.auth);
+
+  const isAuth = sessionStorage.user
+  ? true
+  : false;
+  
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const logoutHandler = () => {

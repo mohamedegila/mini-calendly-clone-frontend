@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import repository from "../api/repository";
 import { logout } from "../redux/auth/authSlice";
 import { Logo } from "./logo";
 export const Navbar = (props) => {
@@ -14,10 +15,14 @@ export const Navbar = (props) => {
   
   const dispatch = useDispatch();
   const navigate = useNavigate()
-  const logoutHandler = () => {
-    dispatch(logout())
+  const logoutHandler = async () => {
+    // dispatch(logout())
+    await repository.logout();
+
+    sessionStorage.removeItem("user");
     navigate('/')
-    //TODO: Clear session
+   
+
   }
   
   return (

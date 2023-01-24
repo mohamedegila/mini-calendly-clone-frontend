@@ -14,7 +14,8 @@ const CalendlyNavbar = () => {
   const logoutHandler = async () => {
     try{
       await repository.logout();
-      await dispatch(logout());
+      // await dispatch(logout());
+      sessionStorage.removeItem("user");
       navigate('/')
     }catch(error){
       console.log(error);
